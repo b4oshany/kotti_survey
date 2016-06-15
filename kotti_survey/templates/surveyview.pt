@@ -28,7 +28,7 @@
           </div>
         </li>
       </ol>
-      <input type="submit" value="Check Answers" i18n:attributes="value"/>
+      <input type="submit" value="Submit" i18n:attributes="value"/>
     </form>
     <div tal:condition="not questions" class="no-questions">
       <h4>No question was added. Please add your set of survey questions now.</h4>

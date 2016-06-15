@@ -23,6 +23,19 @@ class SurveySchema(ContentSchema):
         colander.String(),
         title=_(u'Survey Title'),
         )
+    collect_user_info = colander.SchemaNode(
+        colander.Boolean(),
+        title=_(u'Restrict to login users')
+    )
+    redirect_url = colander.SchemaNode(
+        colander.String(),
+        title=_(u'Redirect URL:'),
+        description=(
+            "If no redirect url is given. Users will be redirect to "
+            "the default result page."
+        ),
+        missing=None
+    )
 
 
 class QuestionSchema(ContentSchema):

@@ -9,7 +9,7 @@ from pyramid.view import view_config
 from pyramid.view import view_defaults
 
 from kotti_survey import _
-from kotti_survey.resources import Survey, Question, AnswerField
+from kotti_survey.resources import Survey, Question, AnswerField, UserAnswer
 from kotti_survey.fanstatic import css_and_js
 from kotti_survey.views import BaseView
 
@@ -27,12 +27,29 @@ class SurveyView(BaseView):
     @view_config(name='view',
                  request_method='POST',
                  renderer='kotti_survey:templates/resultview.pt')
-    def check_answers(self):
+    def save_answers(self):
         questions = self.context.children
         answers = {question.name: self.request.POST.getall(
             question.name) for question in questions}
         self.context.save_answers(self.request, questions, answers)
+        return {
+            'questions': questions,
+            'answers': answers
+        }
 
+    @view_config(name='user-results',
+                 renderer='kotti_survey:templates/resultview.pt')
+    def show_answers(self):
+        questions = self.context.children
+        answer_dbs = UserAnswer.query.filter(
+            UserAnswer.survey_id == self.context.id
+        ).all()
+        answers = {}
+        for answer_db in answer_dbs:
+            if answer_db.question_name in answers:
+                answers[answer_db.question_name].append(answer_db.answer)
+            else:
+                answers[answer_db.question_name] = [answer_db.answer]
         return {
             'questions': questions,
             'answers': answers

@@ -13,11 +13,27 @@
     <p class="description">
       ${context.description}
     </p>
-
-    <ol>
-      <li tal:repeat="question questions">
-        ${question.title}
-      </li>
-    </ol>
+    <div class="table-responsive">
+      <table class="table result-table">
+        <thead>
+          <tr>
+            <th class="questions">Questions</th>
+            <th class="answers">Answers</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr tal:repeat="question questions">
+            <td class="question">${question.title}</td>
+            <td class="answer">
+              <ul>
+                <li  tal:repeat="answer answers.get(question.name, [])">
+                  ${answer}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </html>
