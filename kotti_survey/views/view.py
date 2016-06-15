@@ -8,10 +8,15 @@ Created on 2016-06-15
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 
+from kotti.views.util import template_api
 from kotti_survey import _
-from kotti_survey.resources import Survey, Question, AnswerField, UserAnswer
+from kotti_survey.resources import (
+    Survey, Question, AnswerField, UserAnswer, UserSurvey
+)
 from kotti_survey.fanstatic import css_and_js
 from kotti_survey.views import BaseView
+from pyramid import httpexceptions as httpexc
+from pyramid.renderers import render_to_response
 
 
 @view_defaults(context=Survey, permission="view")
@@ -31,28 +36,46 @@ class SurveyView(BaseView):
         questions = self.context.children
         answers = {question.name: self.request.POST.getall(
             question.name) for question in questions}
-        self.context.save_answers(self.request, questions, answers)
-        return {
-            'questions': questions,
-            'answers': answers
-        }
+        user_survey = self.context.save_answers(
+            self.request, questions, answers)
+        if not user_survey:
+            return httpexc.HTTPFound(location=self.context.path)
+        if self.context.redirect_url:
+            redirect_url = self.context.redirect_url
+        else:
+            redirect_url = "{}/user-results".format(self.context.path)
+        return httpexc.HTTPFound(location=redirect_url)
 
     @view_config(name='user-results',
                  renderer='kotti_survey:templates/resultview.pt')
     def show_answers(self):
         questions = self.context.children
-        answer_dbs = UserAnswer.query.filter(
-            UserAnswer.survey_id == self.context.id
-        ).all()
+        username = self.request.params.get(
+            "username",
+            self.request.user.name if self.request.user else ""
+        )
+        # import pdb; pdb.set_trace()
+
+        user_survey = UserSurvey.query.filter(
+            UserSurvey.username == username,
+            UserSurvey.survey_id == self.context.id
+        ).order_by(UserSurvey.date_completed.desc()).first()
+
         answers = {}
+        if user_survey:
+            answer_dbs = UserAnswer.query.filter(
+                UserAnswer.survey_id == self.context.id,
+                UserAnswer.user_survey_id == user_survey.id
+            ).all()
         for answer_db in answer_dbs:
-            if answer_db.question_name in answers:
-                answers[answer_db.question_name].append(answer_db.answer)
+            if answer_db.question_id in answers:
+                answers[answer_db.question_id].append(answer_db.answer)
             else:
-                answers[answer_db.question_name] = [answer_db.answer]
+                answers[answer_db.question_id] = [answer_db.answer]
         return {
             'questions': questions,
-            'answers': answers
+            'answers': answers,
+            'user_survey': user_survey
         }
 
 

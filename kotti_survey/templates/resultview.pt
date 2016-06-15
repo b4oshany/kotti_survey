@@ -13,6 +13,10 @@
     <p class="description">
       ${context.description}
     </p>
+    <div tal:condition="user_survey">
+      <p>User Survey ID: ${user_survey.id}</p>
+      <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y")}</p>
+    </div>
     <div class="table-responsive">
       <table class="table result-table">
         <thead>
@@ -26,7 +30,7 @@
             <td class="question">${question.title}</td>
             <td class="answer">
               <ul>
-                <li  tal:repeat="answer answers.get(question.name, [])">
+                <li  tal:repeat="answer answers.get(question.name, answers.get(question.id, []))">
                   ${answer}
                 </li>
               </ul>
@@ -35,5 +39,10 @@
         </tbody>
       </table>
     </div>
+    <br>
+    <a  class="btn btn-default" href="${request.resource_url(context)}" i18n:translate="">
+      <span class="fa fa-angle-left"></span>
+      Back to Survey
+    </a>
   </div>
 </html>
