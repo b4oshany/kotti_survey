@@ -107,7 +107,10 @@ class UserSurvey(Base):
                 primary_key=True, default=uuid_factory(), unique=True)
     browser_data = Column(JSON)
     date_completed = Column(DateTime, default=datetime.datetime.utcnow)
-    survey_id = Column(Integer, ForeignKey('surveys.id'), primary_key=True)
+    survey_id = Column(
+        Integer,
+        ForeignKey('surveys.id', onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True)
     username = Column(Unicode(100), primary_key=True, default=uuid_factory())
     answers = relationship("UserAnswer", cascade="save-update, merge, delete")
 
@@ -129,23 +132,20 @@ class UserSurvey(Base):
                     else:
                         do_save = False
             elif question.question_type == "radio":
-                answerchoices = question.children
-                for answerchoice in answerchoices:
-                    if question.name in answers:
-                        user_ans = answers[question.name][0]
-                        if user_ans:
-                            ans = UserAnswer(
-                                answer=user_ans,
-                                question_id=question.id,
-                                survey_id=self.survey_id,
-                                user_survey_id=self.id
-                            )
-                            do_save = True
-                            self.answers.append(ans)
-                        else:
-                            do_save = False
+                if question.name in answers:
+                    user_ans = answers[question.name][0]
+                    if user_ans:
+                        ans = UserAnswer(
+                            answer=user_ans,
+                            question_id=question.id,
+                            survey_id=self.survey_id,
+                            user_survey_id=self.id
+                        )
+                        do_save = True
+                        self.answers.append(ans)
+                    else:
+                        do_save = False
             elif question.question_type == "checkbox":
-                answerchoices = question.children
                 if question.name in answers:
                     user_ans = answers[question.name]
                     if user_ans:
@@ -213,12 +213,18 @@ class UserAnswer(Base):
         return cls.tablename
 
     is_multiple_choice = Column(Boolean, default=False)
-    question_id = Column(Integer, ForeignKey('survey_questions.id'),
-                         primary_key=True)
-    survey_id = Column(Integer, ForeignKey('surveys.id'), primary_key=True)
+    question_id = Column(
+        Integer,
+        ForeignKey('survey_questions.id', onupdate="CASCADE",
+                   ondelete="CASCADE"),
+        primary_key=True)
+    survey_id = Column(
+        Integer,
+        ForeignKey('surveys.id', onupdate="CASCADE", ondelete="CASCADE"),
+        primary_key=True)
     user_survey_id = Column(
         Unicode(100),
-        ForeignKey('user_surveys.id'),
+        ForeignKey('user_surveys.id', onupdate="CASCADE", ondelete="CASCADE"),
         primary_key=True,
     )
     answer = Column(String)

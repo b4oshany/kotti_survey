@@ -13,29 +13,19 @@
     <p class="description">
       ${context.description}
     </p>
-    <div tal:condition="user_survey">
-      <p>User Survey ID: ${user_survey.id}</p>
-      <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y")}</p>
-      <p>IP Address: ${user_survey.browser_data.client_ip}</p>
-      <p>Browser: ${user_survey.browser_data.user_agent}</p>
-    </div>
     <div class="table-responsive">
       <table class="table result-table">
         <thead>
           <tr>
-            <th class="questions">Questions</th>
-            <th class="answers">Answers</th>
+            <th class="user">Username</th>
+            <th class="view">View</th>
           </tr>
         </thead>
         <tbody>
-          <tr tal:repeat="question questions">
-            <td class="question">${question.title}</td>
-            <td class="answer">
-              <ul>
-                <li  tal:repeat="answer answers.get(question.name, answers.get(question.id, []))">
-                  ${answer}
-                </li>
-              </ul>
+          <tr tal:repeat="user_survey user_surveys">
+            <td class="user">${user_survey.username}</td>
+            <td class="link">
+                <a class="btn btn-primary btn-sm" href="${request.resource_url(context, 'user-results')}?username=${user_survey.username}">View</a>
             </td>
           </tr>
         </tbody>

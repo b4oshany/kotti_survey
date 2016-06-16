@@ -25,12 +25,14 @@ class SurveyView(BaseView):
 
     @view_config(name="view",
                  request_method='GET',
+                 permission="view",
                  renderer='kotti_survey:templates/surveyview.pt')
     def view_survey(self):
         return {}
 
     @view_config(name='view',
                  request_method='POST',
+                 permission="view",
                  renderer='kotti_survey:templates/resultview.pt')
     def save_answers(self):
         questions = self.context.children
@@ -46,7 +48,19 @@ class SurveyView(BaseView):
             redirect_url = "{}/user-results".format(self.context.path)
         return httpexc.HTTPFound(location=redirect_url)
 
+    @view_config(name='respondents',
+                 permission="add",
+                 renderer='kotti_survey:templates/respondents.pt')
+    def list_users(self):
+        user_surveys = UserSurvey.query.filter(
+            UserSurvey.survey_id == self.context.id
+        ).order_by(UserSurvey.date_completed.desc()).all()
+        return {
+            "user_surveys": user_surveys
+        }
+
     @view_config(name='user-results',
+                 permission="view",
                  renderer='kotti_survey:templates/resultview.pt')
     def show_answers(self):
         questions = self.context.children
@@ -54,7 +68,6 @@ class SurveyView(BaseView):
             "username",
             self.request.user.name if self.request.user else ""
         )
-        # import pdb; pdb.set_trace()
 
         user_survey = UserSurvey.query.filter(
             UserSurvey.username == username,

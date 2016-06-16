@@ -25,7 +25,7 @@
         <li tal:repeat="question questions" style="margin-bottom: 10px">
           ${question.title}
           <div tal:condition="not: question.children">
-            <input type="text" name="${question.name}"/>
+            <input class="form-control" type="text" name="${question.name}"/>
           </div>
           <div tal:repeat="answer question.children">
             <input tal:attributes="type question.question_type" name="${question.name}" value="${answer.title}"/>
@@ -39,11 +39,14 @@
         No question was added. Please add your set of survey questions now.
       </h4>
       <input form="survey-form" tal:condition="questions" class="btn btn-success" type="submit" value="Submit" i18n:attributes="value"/>
-      <a href="${request.resource_url(context, 'add_question')}" class="btn btn-primary">
+      <a href="${request.resource_url(context, 'add_question')}" class="btn btn-primary" tal:condition="api.has_permission('add')">
         Add Question
       </a>
-      <a href="${request.resource_url(context, 'user-results')}" class="btn btn-info">
+      <a href="${request.resource_url(context, 'user-results')}" class="btn btn-info pull-right">
         View Your Answers
+      </a>
+      <a href="${request.resource_url(context, 'respondents')}" class="btn btn-default pull-right" tal:condition="api.has_permission('add')">
+        List Respondents
       </a>
     </div>
 
