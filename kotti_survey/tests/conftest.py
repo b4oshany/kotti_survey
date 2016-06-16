@@ -5,9 +5,10 @@ Created on 2016-06-15
 :author: Oshane Bailey (b4.oshany@gmail.com)
 """
 
-pytest_plugins = "kotti"
-
 from pytest import fixture
+
+
+pytest_plugins = "kotti"
 
 
 @fixture(scope='session')

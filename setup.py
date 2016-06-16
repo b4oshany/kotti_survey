@@ -1,15 +1,7 @@
 import os
 
-from setuptools import find_packages
 from setuptools import setup
-
-version = '0.1.0'
-project = 'kotti_survey'
-
-install_requires = [
-    'Kotti>=1.0.0',
-    'unidecode'
-],
+from setuptools import find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -21,35 +13,46 @@ try:
 except IOError:
     CHANGES = ''
 
+version = "0.1.0"
+
+install_requires = [
+    'Kotti>=1.0.0',
+    'unidecode',
+]
+
 
 setup(
-    name=project,
+    name='kotti_survey',
     version=version,
-    description="Survey Content Type for Kotti",
-    long_description=README + '\n\n' + CHANGES,
+    description="PDF content type for Kotti",
+    long_description='\n\n'.join([README, CHANGES]),
     classifiers=[
         "Programming Language :: Python",
-        "Framework :: Pyramid",
+        "Programming Language :: Python :: 2.7",
+        "Framework :: Pylons",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         "License :: Repoze Public License",
     ],
-    keywords='kotti addon',
-    author='Sebastian Brass',
-    author_email='brass@xo7.de',
-    url='https://github.com/sbabrass/kotti_survey',
-    license='BSD',
+    author='Oshane Bailey',
+    author_email='b4.oshany@gmail.com',
+    url='https://github.com/b4oshany/kotti_survey',
+    keywords='kotti web cms wcms pylons pyramid sqlalchemy bootstrap pdf',
+    license="BSD-derived (http://www.repoze.org/LICENSE.txt)",
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,
     tests_require=[],
+    dependency_links=[],
     entry_points={
         'fanstatic.libraries': [
             'kotti_survey = kotti_survey.fanstatic:library',
         ],
     },
-    package_data={"kotti_survey": ["templates/*",
-                                 "static/*",
-                                 "locale/*", "views/*",
-                                 "alembic/*.*", "alembic/versions/*"]},
-    extras_require={}
+    package_data={"kotti_survey": ["templates/*", "static/*",
+                                   "locale/*", "views/*",
+                                   "alembic/*.*", "alembic/versions/*"]},
+    extras_require={},
 )
