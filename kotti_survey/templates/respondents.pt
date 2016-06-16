@@ -18,7 +18,7 @@
         <thead>
           <tr>
             <th class="user">Username</th>
-            <th class="view">View</th>
+            <th class="view">Options</th>
           </tr>
         </thead>
         <tbody>
@@ -26,6 +26,7 @@
             <td class="user">${user_survey.username}</td>
             <td class="link">
                 <a class="btn btn-primary btn-sm" href="${request.resource_url(context, 'user-results')}?username=${user_survey.username}">View</a>
+                <a class="btn btn-danger btn-sm" href="${request.resource_url(context, 'delete-results')}?username=${user_survey.username}">Delete</a>
             </td>
           </tr>
         </tbody>

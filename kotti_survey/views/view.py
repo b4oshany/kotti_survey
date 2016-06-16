@@ -8,6 +8,7 @@ Created on 2016-06-15
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 
+from kotti import DBSession
 from kotti.views.util import template_api
 from kotti_survey import _
 from kotti_survey.resources import (
@@ -19,20 +20,18 @@ from pyramid import httpexceptions as httpexc
 from pyramid.renderers import render_to_response
 
 
-@view_defaults(context=Survey, permission="view")
+@view_defaults(context=Survey)
 class SurveyView(BaseView):
     """View for Survey Content Type"""
 
     @view_config(name="view",
                  request_method='GET',
-                 permission="view",
                  renderer='kotti_survey:templates/surveyview.pt')
     def view_survey(self):
         return {}
 
     @view_config(name='view',
                  request_method='POST',
-                 permission="view",
                  renderer='kotti_survey:templates/resultview.pt')
     def save_answers(self):
         questions = self.context.children
@@ -60,14 +59,16 @@ class SurveyView(BaseView):
         }
 
     @view_config(name='user-results',
-                 permission="view",
                  renderer='kotti_survey:templates/resultview.pt')
     def show_answers(self):
         questions = self.context.children
-        username = self.request.params.get(
-            "username",
-            self.request.user.name if self.request.user else ""
-        )
+        if self.request.has_permission("add", self.context):
+            username = self.request.params.get(
+                "username",
+                self.request.user.name if self.request.user else ""
+            )
+        else:
+            username = self.request.user.name if self.request.user else ""
 
         user_survey = UserSurvey.query.filter(
             UserSurvey.username == username,
@@ -90,6 +91,27 @@ class SurveyView(BaseView):
             'answers': answers,
             'user_survey': user_survey
         }
+
+    @view_config(name='delete-results',
+                 permission="delete")
+    def delete_result(self):
+        questions = self.context.children
+        if self.request.has_permission("delete", self.context):
+            username = self.request.params.get(
+                "username",
+                self.request.user.name if self.request.user else ""
+            )
+        else:
+            username = self.request.user.name if self.request.user else ""
+
+        user_survey = UserSurvey.query.filter(
+            UserSurvey.username == username,
+            UserSurvey.survey_id == self.context.id
+        ).order_by(UserSurvey.date_completed.desc()).first()
+        DBSession.delete(user_survey)
+        return httpexc.HTTPFound(
+            location=self.context.path
+        )
 
 
 @view_defaults(context=Question)

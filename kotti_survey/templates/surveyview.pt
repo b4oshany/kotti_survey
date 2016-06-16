@@ -12,7 +12,7 @@
 
     <h1>
       ${context.title}
-      <a class="btn btn-primary btn-sm pull-right" href="${request.resource_url(api.root, 'add_survey')}">
+      <a tal:condition="api.has_permission('add')" class="btn btn-primary btn-sm pull-right" href="${request.resource_url(api.root, 'add_survey')}">
         New Survey
       </a>
     </h1>
