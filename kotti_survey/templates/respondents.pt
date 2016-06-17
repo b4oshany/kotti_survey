@@ -23,7 +23,10 @@
         </thead>
         <tbody>
           <tr tal:repeat="user_survey user_surveys">
-            <td class="user">${user_survey.username}</td>
+            <td tal:condition="not context.collect_user_info or not request.has_permission('admin')" class="user">${user_survey.username}</td>
+            <td tal:condition="context.collect_user_info and request.has_permission('admin')" class="user">
+              <a href="/@@setup-user?name=${user_survey.username}">${user_survey.username}</a>
+            </td>
             <td class="link">
                 <a class="btn btn-primary btn-sm" href="${request.resource_url(context, 'user-results')}?username=${user_survey.username}">View</a>
                 <a class="btn btn-danger btn-sm" href="${request.resource_url(context, 'delete-results')}?username=${user_survey.username}">Delete</a>
