@@ -18,7 +18,7 @@ from sqlalchemy import (
     Boolean,
     DateTime
 )
-import user_agent
+import user_agents
 from zope.interface import implements
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr, declarative_base
@@ -118,7 +118,12 @@ class UserSurvey(Base):
     @property
     def user_agent(self):
         if not hasattr(self, "_UserSurvey__user_agent"):
-            self._user_agent = user_agent.parse(self.browser_data.user_agent)
+            try:
+                self._user_agent = user_agents.parse(
+                        self.browser_data["user_agent"]
+                )
+            except KeyError:
+                self._user_agent = None
         return self._user_agent
 
     def save_answers(self, questions, answers):
