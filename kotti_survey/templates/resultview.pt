@@ -14,7 +14,12 @@
       ${context.description}
     </p>
     <div tal:condition="user_survey">
-      <p>User Survey ID: ${user_survey.username}</p>
+      <p tal:condition="not context.collect_user_info or not request.has_permission('admin')" class="user">
+        User Survey ID: ${user_survey.username}
+      </p>
+      <p tal:condition="context.collect_user_info and request.has_permission('admin')" class="user">
+        User Survey ID:  <a href="/@@setup-user?name=${user_survey.username}">${user_survey.username}</a>
+      </p>
       <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y - %I:%M%p %z ")}</p>
       <p>IP Address: ${user_survey.browser_data.client_ip}</p>
       <div tal:condition="user_survey.user_agent">
