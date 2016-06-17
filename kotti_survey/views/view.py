@@ -76,11 +76,18 @@ class SurveyView(BaseView):
         ).order_by(UserSurvey.date_completed.desc()).first()
 
         answers = {}
+        answer_dbs = []
         if user_survey:
             answer_dbs = UserAnswer.query.filter(
                 UserAnswer.survey_id == self.context.id,
                 UserAnswer.user_survey_id == user_survey.id
             ).all()
+        else:
+            self.request.session.flash(
+                _(u'Please complete the survey before continuing'),
+                "warnings"
+            )
+            return httpexc.HTTPFound(location=self.context.path)
         for answer_db in answer_dbs:
             if answer_db.question_id in answers:
                 answers[answer_db.question_id].append(answer_db.answer)

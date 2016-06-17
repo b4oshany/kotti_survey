@@ -17,7 +17,11 @@
       <p>User Survey ID: ${user_survey.id}</p>
       <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y")}</p>
       <p>IP Address: ${user_survey.browser_data.client_ip}</p>
-      <p>Browser: ${user_survey.browser_data.user_agent}</p>
+      <p>User Agent: ${str(user_survey.user_agent)}</p>
+      <p>Browser: ${user_survey.user_agent.browser.family}</p>
+      <p>Browser Version: ${user_survey.user_agent.browser.version_string}</p>
+      <p>Operating System: ${user_survey.user_agent.os.family}</p>
+      <p>Operating System Version: ${user_survey.user_agent.os.version_string}</p>
     </div>
     <div class="table-responsive">
       <table class="table result-table">

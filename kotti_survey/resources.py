@@ -18,6 +18,7 @@ from sqlalchemy import (
     Boolean,
     DateTime
 )
+import user_agent
 from zope.interface import implements
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr, declarative_base
@@ -113,6 +114,12 @@ class UserSurvey(Base):
         primary_key=True)
     username = Column(Unicode(100), primary_key=True, default=uuid_factory())
     answers = relationship("UserAnswer", cascade="save-update, merge, delete")
+
+    @property
+    def user_agent(self):
+        if not hasattr(self, "_UserSurvey__user_agent"):
+            self._user_agent = user_agent.parse(self.browser_data.user_agent)
+        return self._user_agent
 
     def save_answers(self, questions, answers):
         do_save = False
