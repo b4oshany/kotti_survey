@@ -15,7 +15,7 @@
     </p>
     <div tal:condition="user_survey">
       <p>User Survey ID: ${user_survey.username}</p>
-      <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y")}</p>
+      <p>Date Completed: ${user_survey.date_completed.strftime("%A %d. %B %Y - %I:%M%p %z ")}</p>
       <p>IP Address: ${user_survey.browser_data.client_ip}</p>
       <div tal:condition="user_survey.user_agent">
         <p>Browser: ${user_survey.user_agent.browser.family}</p>
