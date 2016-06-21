@@ -45,7 +45,9 @@ class SurveyView(BaseView):
             redirect_url = self.context.redirect_url
         else:
             redirect_url = "{}/user-results".format(self.context.path)
-        return httpexc.HTTPFound(location=redirect_url)
+        resp = httpexc.HTTPFound(location=redirect_url)
+        resp.set_cookie(self.context.name, user_survey.username, 30000)
+        return resp
 
     @view_config(name='respondents',
                  permission="add",
