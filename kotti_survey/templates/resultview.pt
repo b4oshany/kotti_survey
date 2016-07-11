@@ -7,7 +7,7 @@
       metal:use-macro="api.macro('kotti:templates/view/master.pt')"
       i18n:domain="kotti_quiz">
 
-  <div metal:fill-slot="content" class="content">
+  <div metal:fill-slot="content" class="content kotti_survey">
 
     <h1>${context.title}</h1>
     <p class="description">

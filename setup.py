@@ -13,11 +13,12 @@ try:
 except IOError:
     CHANGES = ''
 
-version = "0.2.7"
+version = "0.2.8"
 
 install_requires = [
     'Kotti>=1.0.0',
     'user-agents>=1.0.1',
+    'kotti_analytics>=0.2',
     'unidecode',
     'psycopg2'
 ]

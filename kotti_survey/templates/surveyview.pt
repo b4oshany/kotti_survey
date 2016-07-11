@@ -8,7 +8,7 @@
       tal:define="questions context.children_with_permission(request)"
       i18n:domain="kotti_quiz">
 
-  <div metal:fill-slot="content" class="content">
+  <div metal:fill-slot="content" class="content kotti_survey">
 
     <h1>
       ${context.title}

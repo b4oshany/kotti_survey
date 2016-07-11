@@ -1,13 +1,13 @@
 /* CSS */
 
-h1, h2, h3 {
+.content.kotti_survey h1, .content.kotti_survey h2, .content.kotti_survey h3 {
   text-shadow: 4px 4px 2px #ccc;
 }
 
-p.wronganswer {
+.content.kotti_survey p.wronganswer {
   color: red;
 }
 
-p.rightanswer {
+.content.kotti_survey p.rightanswer {
   color: green;
 }
